@@ -1,0 +1,1 @@
+const produitModel = riquire("../models/produitmodel")
