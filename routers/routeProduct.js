@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const produitController = require("../controllers/produitController");
+const productController = require("../controllers/productController");
 const auth = require("../middleware/auth"); 
-router.get("/", auth, produitController.afficheProduits);
-router.get("/:id", auth, produitController.afficheProduitId); 
-router.post("/", auth, produitController.addProduit);
-router.patch("/", auth, produitController.updateProduit);
-router.patch("/stock", auth, produitController.updateStock); 
-router.delete("/", auth, produitController.deletedProduit);
+router.get("/", auth, productController.afficheProduits);
+router.get("/:id", auth, productController.afficheProduitId); 
+router.post("/", auth, productController.addProduit);
+router.patch("/", auth, productController.updateProduit);
+router.patch("/stock", auth, productController.updateStock); 
+router.delete("/", auth, productController.deletedProduit);
 
 module.exports = router;
