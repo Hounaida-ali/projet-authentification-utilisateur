@@ -1,15 +1,15 @@
-const productModel = require("../models/produitModel");
+const productModel = require("../models/productModel");
 
 //afficher tous les produits
 
-const afficheProduits = async (req, res) => {
+const afficheProducts = async (req, res) => {
     const products = await productModel.find();
     res.send(products);
 };
 
 //afficher un produit par son id
 
-const afficheProduitId = async (req, res) => {
+const afficheProducttId = async (req, res) => {
     const id = req.params.id;
 
     const product = await productModel.findById(id);
@@ -56,7 +56,7 @@ const addProduit = async (req, res) => {
 };
 // mettre à jour un produit
 
-const updateProduit = async(req, res) => {
+const updateProduct = async(req, res) => {
     const id = req.params.id;
     const { productName, price } = req.body;
 
@@ -113,7 +113,7 @@ const updateStock = async (req, res) => {
     });
 };
 
-const deletedProduit = async (req, res) => {
+const deletedProduct = async (req, res) => {
     const id = req.params.id;
 
     const deletedProduct = await productModel.findByIdAndDelete(id);
@@ -131,10 +131,10 @@ const deletedProduit = async (req, res) => {
 
 
 module.exports = {
-    afficheProduits,
-    afficheProduitId,
+    afficheProducts,
+    afficheProductId,
     addProduit,
-    updateProduit,
+    updateProduct,
     updateStock,
-    deletedProduit,
+    deletedProduct,
 };  

@@ -29,6 +29,7 @@ const register = async (req, res) => {
     const otp = generaterCode();
     console.log(otp);
     
+    
     const otpToken = v4()
     const otpConcred = await otpModel.create({
         utilisateurId: utilisateur._id,
