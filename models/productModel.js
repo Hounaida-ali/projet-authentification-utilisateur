@@ -15,6 +15,11 @@ const schema = mongoose.Schema({
     enum: ["in-stock", "low-stock", "out-of-stock"],
     default: "in-stock",
   },
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'users',
+    required: true
+  }
 });
 // model for product
 const productModel = mongoose.model("produits", schema);

@@ -2,14 +2,22 @@ const productModel = require("../models/productModel");
 
 //afficher tous les produits
 
+<<<<<<< HEAD
 const afficheProducts = async (req, res) => {
+=======
+const getProducts = async (req, res) => {
+>>>>>>> 1cc52b6 (la protection des routes)
     const products = await productModel.find();
     res.send(products);
 };
 
 //afficher un produit par son id
 
+<<<<<<< HEAD
 const afficheProducttId = async (req, res) => {
+=======
+const getProductId = async (req, res) => {
+>>>>>>> 1cc52b6 (la protection des routes)
     const id = req.params.id;
 
     const product = await productModel.findById(id);
@@ -28,7 +36,7 @@ const afficheProducttId = async (req, res) => {
 
 //ajouter un produit
 
-const addProduit = async (req, res) => {
+const postProduct = async (req, res) => {
     const { productName, price, stockStatus } = req.body;
 
     const allowedStatus = ["in-stock", "low-stock", "out-of-stock"];
@@ -47,6 +55,7 @@ const addProduit = async (req, res) => {
         productName,
         price,
         stockStatus,
+        userId: req.decoded.userId // ID de l'utilisateur courant (connecté)
     });
 
     res.send({
@@ -56,7 +65,11 @@ const addProduit = async (req, res) => {
 };
 // mettre à jour un produit
 
+<<<<<<< HEAD
 const updateProduct = async(req, res) => {
+=======
+const updateProduct = async (req, res) => {
+>>>>>>> 1cc52b6 (la protection des routes)
     const id = req.params.id;
     const { productName, price } = req.body;
 
@@ -67,7 +80,7 @@ const updateProduct = async(req, res) => {
         return;
     }
 
-    const updatedProduct = await productModel.findByIdAndUpdate(
+    const updateProduct = await productModel.findByIdAndUpdate(
         id,
         { productName, price },
         { new: true }
@@ -75,7 +88,7 @@ const updateProduct = async(req, res) => {
 
     res.send({
         message: "Product updated successfully.",
-        updatedProduct,
+        updateProduct,
     });
 };
 
@@ -116,13 +129,24 @@ const updateStock = async (req, res) => {
 const deletedProduct = async (req, res) => {
     const id = req.params.id;
 
+    // recupérer le produit
+    // produit = productModel.findById(id)
+
+    let product = await productModel.findById(id)
+
+    // si produit.userId != req.decoded.userId => quitter avec un message
+    console.log(product.userId != req.decoded.userId);
+    
+    if (product.userId != req.decoded.userId) {
+        res.status(401).send("action not authorizied.");
+        return;
+    }
     const deletedProduct = await productModel.findByIdAndDelete(id);
 
     if (!deletedProduct) {
         res.status(404).send("Product not found.");
         return;
     }
-
     res.send({
         message: "Product deleted successfully.",
         deletedProduct,
@@ -131,9 +155,15 @@ const deletedProduct = async (req, res) => {
 
 
 module.exports = {
+<<<<<<< HEAD
     afficheProducts,
     afficheProductId,
     addProduit,
+=======
+    getProducts,
+    getProductId,
+    postProduct,
+>>>>>>> 1cc52b6 (la protection des routes)
     updateProduct,
     updateStock,
     deletedProduct,

@@ -4,28 +4,29 @@ const jwt = require("jsonwebtoken");
 const { v4 } = require("uuid");
 const transporter = require("../email/emailTransporter");
 
-const generaterCode = require("../email/generaterCode");
+const generateCode = require("../email/generateCode");
 
 const otpModel = require("../models/otpModel");
-// enregistrer un utilisateur
+// enregistrer unuser
 const register = async (req, res) => {
-    const { nameUser, password, email } = req.body;
+  const { nameUser, password, email } = req.body;
 
-    const existEmail = await userModel.findOne({ email });
-    if (existEmail) {
-        res.send({ message: "email existe deja" });
-        return;
-    }
+  const existEmail = await userModel.findOne({ email });
+  if (existEmail) {
+    res.send({ message: "email existe deja" });
+    return;
+  }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    let utilisateur;
-    try {
-        utilisateur = await userModel.create({ nameUser, email, password: hashedPassword });
-    } catch (error) {
-        res.send({ message: "utilisateur n est pas enregistrer" });
-        return;
-    }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  let user;
+  try {
+    user = await userModel.create({ nameUser, email, password: hashedPassword });
+  } catch (error) {
+    res.send({ message: "utilisateur n est pas enregistrer" });
+    return;
+  }
 
+<<<<<<< HEAD
     const otp = generaterCode();
     console.log(otp);
     
@@ -38,36 +39,49 @@ const register = async (req, res) => {
         purpose: "verify-email",
     }
     );
+=======
+  const otp = generateCode();
+  console.log(otp);
+
+  const otpToken = v4()
+  const otpConcred = await otpModel.create({
+    userId: user._id,
+    otp,
+    otpToken,
+    purpose: "verify-email",
+  }
+  );
+>>>>>>> 1cc52b6 (la protection des routes)
 
 
-    transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: utilisateur.email,
-        subject: "Verification de votre email",
-        html: `<h1>verification de votre email</h1>
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: "Verification de votre email",
+    html: `<h1>verification de votre email</h1>
     <div>
     Votre token de verification est :
     <strong>${otp}</strong>
     </div>`
-    });
+  });
 
-    res.send({
-        message: "utilisateur ajouter avec succe",
-        utilisateur,
-        otpToken,
-    })
+  res.send({
+    message: "utilisateur ajouter avec succe",
+    user,
+    otpToken,
+  })
 };
 
 const verifyOtp = async (req, res) => {
- const {otp, otpToken, purpose} = req.body;
+  const { otp, otpToken, purpose } = req.body;
 
- if (purpose !== "verify-email") {
+  if (purpose !== "verify-email") {
     res.status(422).send({
-        message:"invalid purpose"
+      message: "invalid purpose"
     });
     return
- }
- const otpConcred = await otpModel.findOne({
+  }
+  const otpConcred = await otpModel.findOne({
     otpToken,
     purpose,
   });
@@ -79,7 +93,7 @@ const verifyOtp = async (req, res) => {
     return;
   }
   const updatedUser = await userModel.findByIdAndUpdate(
-    otpConcred.utilisateurId,
+    otpConcred.userId,
     { isEmailVerified: true },
     { new: true }
   );
@@ -89,17 +103,17 @@ const verifyOtp = async (req, res) => {
     updatedUser,
   });
 };
-const connectUser = async (req, res) => {
+const login = async (req, res) => {
   // console.log(req.body);
   const { email, password } = req.body;
-  
-  const utilisateur = await userModel.findOne({ email });
+
+  const user = await userModel.findOne({ email });
   // console.log(user);
-  if (!utilisateur) {
+  if (!user) {
     res.status(404).send({ message: "user not found" });
     return;
   }
-  const isExactPassword = bcrypt.compareSync(password, utilisateur.password);
+  const isExactPassword = bcrypt.compareSync(password, user.password);
   if (!isExactPassword) {
     res.status(401).send({ message: "invalid credentials" });
     return;
@@ -108,8 +122,8 @@ const connectUser = async (req, res) => {
 
   const token = jwt.sign(
     {
-      utilisateurId: utilisateur._id,
-      email: utilisateur.email
+      userId: user._id,
+      email: user.email
     },
     process.env.SECRET_KEY
   );
@@ -122,71 +136,71 @@ const connectUser = async (req, res) => {
 
 //reinisilize password
 const reinisilize = async (req, res) => {
-    const { email } = req.body;
+  const { email } = req.body;
 
-    const existEmail = await userModel.findOne({ email });
-    if (!existEmail) {
-        res.status(404).send({ message: "user not found" });
-        return;
-    }
-    const otp = generaterCode();
-    const otpToken = v4()
-    const generaterOtp = await otpModel.create({
-        utilisateurId: existEmail._id,
-        otp,
-        otpToken,
-        purpose: "reset-password",
-    }
-    );
-    transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: existEmail.email,
-        subject: "Reinisilize password",
-        html: `<h1>Reinisilize password</h1>
+  const existEmail = await userModel.findOne({ email });
+  if (!existEmail) {
+    res.status(404).send({ message: "user not found" });
+    return;
+  }
+  const otp = generateCode();
+  const otpToken = v4()
+  const generateOtp = await otpModel.create({
+    userId: existEmail._id,
+    otp,
+    otpToken,
+    purpose: "reset-password",
+  }
+  );
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: existEmail.email,
+    subject: "Reinisilize password",
+    html: `<h1>Reinisilize password</h1>
     <div>
     Votre token de verification est :
     <strong>${otp}</strong>
     </div>`
-    });
+  });
 
-    res.send({
-        message: "otp send successfully",
-        otpToken,
-    });
+  res.send({
+    message: "otp send successfully",
+    otpToken,
+  });
 };
 
 const resetPassword = async (req, res) => {
-    const { otp, otpToken,purpose, newPassword } = req.body;
-    if (purpose !== "reset-password") {
-        res.status(422).send({
-            message: "invalid purpose"
-        });
-        return;
-    }
-    const otpConcred = await otpModel.findOne({
-        otpToken,
-        purpose,
+  const { otp, otpToken, purpose, newPassword } = req.body;
+  if (purpose !== "reset-password") {
+    res.status(422).send({
+      message: "invalid purpose"
     });
+    return;
+  }
+  const otpConcred = await otpModel.findOne({
+    otpToken,
+    purpose,
+  });
 
-    if (otp !== otpConcred.otp) {
-        res.status(406).send({
-            message: "otp invalid",
-        });
-        return;
-    }
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const updatedUser = await userModel.findByIdAndUpdate(
-        otpConcred.utilisateurId,
-        { password: hashedPassword },
-        { new: true }
-    );
-
-    res.send({
-        message: "password reset successfully",
-        updatedUser,
+  if (otp !== otpConcred.otp) {
+    res.status(406).send({
+      message: "otp invalid",
     });
+    return;
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const updatedUser = await userModel.findByIdAndUpdate(
+    otpConcred.userId,
+    { password: hashedPassword },
+    { new: true }
+  );
+
+  res.send({
+    message: "password reset successfully",
+    updatedUser,
+  });
 };
 
 
-module.exports = { register,verifyOtp, connectUser,resetPassword, reinisilize };
+module.exports = { register, verifyOtp, login, resetPassword, reinisilize };
 

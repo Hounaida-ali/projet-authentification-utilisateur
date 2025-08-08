@@ -17,9 +17,9 @@ const schema = mongoose.Schema({
     isEmailVerified: {
         type: Boolean,
         default: false
-    }
-
+    } 
 },
+ {tamestamps:true}
 );
 
 // model user
