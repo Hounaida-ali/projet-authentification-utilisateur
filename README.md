@@ -23,12 +23,12 @@ L’authentification des utilisateurs sert à vérifier leur identité afin de s
 1- Clonez le projet 
 
 ```
-git clone https://github.com/mon-utilisateur/mon-projet.git
+git clone git@github.com:Hounaida-ali/projet-authentification-utilisateur.git
 
 ```
 2-Accéder au dossier du projet
 ```
-cd projet
+cd projet-authentification-utilisateur/
 code .
 
 ```
