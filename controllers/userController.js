@@ -25,8 +25,6 @@ const register = async (req, res) => {
     res.send({ message: "utilisateur n est pas enregistrer" });
     return;
   }
-
-<<<<<<< HEAD
     const otp = generaterCode();
     console.log(otp);
     
@@ -39,19 +37,6 @@ const register = async (req, res) => {
         purpose: "verify-email",
     }
     );
-=======
-  const otp = generateCode();
-  console.log(otp);
-
-  const otpToken = v4()
-  const otpConcred = await otpModel.create({
-    userId: user._id,
-    otp,
-    otpToken,
-    purpose: "verify-email",
-  }
-  );
->>>>>>> 1cc52b6 (la protection des routes)
 
 
   transporter.sendMail({

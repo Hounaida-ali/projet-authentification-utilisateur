@@ -2,22 +2,14 @@ const productModel = require("../models/productModel");
 
 //afficher tous les produits
 
-<<<<<<< HEAD
-const afficheProducts = async (req, res) => {
-=======
 const getProducts = async (req, res) => {
->>>>>>> 1cc52b6 (la protection des routes)
     const products = await productModel.find();
     res.send(products);
 };
 
 //afficher un produit par son id
 
-<<<<<<< HEAD
-const afficheProducttId = async (req, res) => {
-=======
 const getProductId = async (req, res) => {
->>>>>>> 1cc52b6 (la protection des routes)
     const id = req.params.id;
 
     const product = await productModel.findById(id);
@@ -36,7 +28,7 @@ const getProductId = async (req, res) => {
 
 //ajouter un produit
 
-const postProduct = async (req, res) => {
+const addProduct = async (req, res) => {
     const { productName, price, stockStatus } = req.body;
 
     const allowedStatus = ["in-stock", "low-stock", "out-of-stock"];
@@ -65,11 +57,7 @@ const postProduct = async (req, res) => {
 };
 // mettre à jour un produit
 
-<<<<<<< HEAD
-const updateProduct = async(req, res) => {
-=======
 const updateProduct = async (req, res) => {
->>>>>>> 1cc52b6 (la protection des routes)
     const id = req.params.id;
     const { productName, price } = req.body;
 
@@ -80,7 +68,7 @@ const updateProduct = async (req, res) => {
         return;
     }
 
-    const updateProduct = await productModel.findByIdAndUpdate(
+    const updProduct = await productModel.findByIdAndUpdate(
         id,
         { productName, price },
         { new: true }
@@ -88,7 +76,7 @@ const updateProduct = async (req, res) => {
 
     res.send({
         message: "Product updated successfully.",
-        updateProduct,
+        updProduct,
     });
 };
 
@@ -136,7 +124,7 @@ const deletedProduct = async (req, res) => {
 
     // si produit.userId != req.decoded.userId => quitter avec un message
     console.log(product.userId != req.decoded.userId);
-    
+
     if (product.userId != req.decoded.userId) {
         res.status(401).send("action not authorizied.");
         return;
@@ -155,15 +143,9 @@ const deletedProduct = async (req, res) => {
 
 
 module.exports = {
-<<<<<<< HEAD
-    afficheProducts,
-    afficheProductId,
-    addProduit,
-=======
     getProducts,
     getProductId,
-    postProduct,
->>>>>>> 1cc52b6 (la protection des routes)
+    addProduct,
     updateProduct,
     updateStock,
     deletedProduct,
