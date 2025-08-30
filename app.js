@@ -7,7 +7,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 
 
 const app = express();
-const PORT = 7000;
+const PORT = process.env.PORT ;
 // connecter la base de donneés
 mongoose
   .connect(process.env.MONGODB_URI)

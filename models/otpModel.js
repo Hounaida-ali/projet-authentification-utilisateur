@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 // schema for OTP
 const otpSchema = mongoose.Schema({
-    utilisateurId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
         required: true,

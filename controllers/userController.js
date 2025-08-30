@@ -25,13 +25,13 @@ const register = async (req, res) => {
     res.send({ message: "utilisateur n est pas enregistrer" });
     return;
   }
-    const otp = generaterCode();
+    const otp = generateCode();
     console.log(otp);
     
     
     const otpToken = v4()
     const otpConcred = await otpModel.create({
-        utilisateurId: utilisateur._id,
+        userId: user._id,
         otp,
         otpToken,
         purpose: "verify-email",
@@ -167,6 +167,13 @@ const resetPassword = async (req, res) => {
     purpose,
   });
 
+  if(!otpConcred) {
+    res.status(404).send({
+      message: "otp not found"
+    });
+    return;
+  }
+  
   if (otp !== otpConcred.otp) {
     res.status(406).send({
       message: "otp invalid",
@@ -179,6 +186,8 @@ const resetPassword = async (req, res) => {
     { password: hashedPassword },
     { new: true }
   );
+
+  await otpModel.deleteMany({ userId: otpConcred.userId, purpose });
 
   res.send({
     message: "password reset successfully",
